@@ -5,4 +5,4 @@ Java-Script UI Library
 [CLICK](https://arsaide.github.io/Library/)
 
 ## SRC FILES
-[CLICK](https://github.com/Arsaide/Project-Files/tree/main/5)LIBRARY)
+[CLICK](https://github.com/Arsaide/Project-Files/tree/main/LIBRARY)
