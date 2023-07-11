@@ -19,7 +19,6 @@ _core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.dropdown = function () {
     });
   }
 };
-(0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])('.dropdown-toggle').dropdown();
 
 /***/ }),
 
@@ -32,33 +31,106 @@ _core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.dropdown = function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core */ "./src/js/lib/core.js");
 
-_core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.modal = function () {
+_core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.modal = function (created) {
   for (let i = 0; i < this.length; i++) {
-    const target = this[i].getAttribute('data-target');
+    const target = this[i].getAttribute('data-target'),
+      scroll = calcScroll();
     (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])(this[i]).click(e => {
       e.preventDefault();
       (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])(target).fadeIn(250);
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
+      document.body.style.marginRight = `${scroll}px`;
+    });
+
+    // target - уникальный индифакатор
+    // Скрытие модального окна
+    const closeElements = document.querySelectorAll(`${target} [data-close]`);
+    closeElements.forEach(elem => {
+      (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])(elem).click(() => {
+        (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])(target).fadeOut(250);
+        document.body.style.overflow = '';
+        document.body.style.marginRight = `0px`;
+        if (created) {
+          document.querySelector(target).remove();
+        }
+      });
+    });
+    //Скрытие при клике на подложку
+    (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])(target).click(e => {
+      if (e.target.classList.contains('modal')) {
+        (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])(target).fadeOut(250);
+        document.body.style.overflow = '';
+        document.body.style.marginRight = `0px`;
+        if (created) {
+          document.querySelector(target).remove();
+        }
+      }
     });
   }
-
-  // Скрытие модального окна
-  const closeElements = document.querySelectorAll('[data-close]');
-  closeElements.forEach(elem => {
-    (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])(elem).click(() => {
-      (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])('.modal').fadeOut(250);
-      document.body.style.overflow = '';
-    });
-  });
-  //Скрытие при клике на подложку
-  (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])('.modal').click(e => {
-    if (e.target.classList.contains('modal')) {
-      (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])('.modal').fadeOut(250);
-      document.body.style.overflow = '';
-    }
-  });
+  function calcScroll() {
+    let div = document.createElement('div');
+    div.style.width = '50px';
+    div.style.height = '50px';
+    div.style.overflowY = 'scroll';
+    div.style.visibility = 'hidden';
+    document.body.appendChild(div);
+    let scrollWidth = div.offsetWidth - div.clientWidth;
+    div.remove();
+    return scrollWidth;
+  }
 };
 (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])('[data-toggle="modal"]').modal();
+_core__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.createModal = function () {
+  let {
+    text,
+    btns
+  } = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  for (let i = 0; i < this.length; i++) {
+    let modal = document.createElement('div');
+    modal.classList.add('modal');
+    modal.setAttribute('id', this[i].getAttribute('data-target').slice(1));
+
+    // btns = {count: num, settings: [[text, classNames=[], close, cb]]}
+    const buttons = [];
+    for (let j = 0; j < btns.count; j++) {
+      const [text, classNames, dataClose, callback] = btns.settings[j];
+      let btn = document.createElement('button');
+      btn.classList.add('btn', ...classNames);
+      btn.textContent = text;
+      if (dataClose) {
+        btn.setAttribute('data-close', 'true');
+      }
+      if (callback && typeof callback === 'function') {
+        btn.addEventListener('click', callback);
+      }
+      buttons.push(btn);
+    }
+    modal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <button class="close" data-close>
+                    <span>&times;</span>
+                </button>
+                <div class="modal-header">
+                    <div class="modal-title">
+                        ${text.title}
+                    </div>
+                </div>
+                <div class="modal-body">
+                    ${text.body}
+                </div>
+                <div class="modal-footer">
+                    
+                </div>
+            </div>
+        </div>
+        `;
+    modal.querySelector(".modal-footer").append(...buttons);
+    document.body.appendChild(modal);
+    (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])(this[i]).modal(true);
+    (0,_core__WEBPACK_IMPORTED_MODULE_0__["default"])(this[i].getAttribute('data-target')).fadeIn(500);
+  }
+};
 
 /***/ }),
 
@@ -507,17 +579,21 @@ __webpack_require__.r(__webpack_exports__);
 (0,_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('button').eq(2).on('click', () => {
   (0,_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('.w-500').fadeToggle(800);
 });
-(0,_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('.wrap').html(`
-        <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" id="dropdownMenuButton">Dropdown button</button>
-            <div class="dropdown-menu" data-toggle-id="dropdownMenuButton">
-                <a href="#" class="dropdown-item">Action №1</a>
-                <a href="#" class="dropdown-item">Action №2</a>
-                <a href="#" class="dropdown-item">Action №3</a>
-            </div>
-        </div>
-    `);
 (0,_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('.dropdown-toggle').dropdown();
+(0,_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('#trigger').click(() => (0,_lib_lib__WEBPACK_IMPORTED_MODULE_0__["default"])('#trigger').createModal({
+  text: {
+    title: 'Modal title',
+    body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum minus doloremque nesciunt enim rem quam corporis? Dolorem pariatur magnam distinctio perferendis. Ratione dolorem voluptates iusto facilis odit veritatis, suscipit voluptatibus!'
+  },
+  btns: {
+    count: 3,
+    settings: [['Close', ['btn-danger', 'mr-10'], true], ['Save changes', ['btn-success'], false, () => {
+      alert('Данные сохранены');
+    }], ['Another bth', ['btn-warning', 'ml-10'], false, () => {
+      alert('Hello, World!');
+    }]]
+  }
+}));
 })();
 
 /******/ })()
