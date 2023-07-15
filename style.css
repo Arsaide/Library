@@ -261,6 +261,41 @@
   display: block;
 }
 
+.accordion {
+  max-width: 700px;
+}
+.accordion-head {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 50px;
+  padding: 0 20px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: #343a40;
+  cursor: pointer;
+}
+.accordion-head__active {
+  color: #025fff;
+}
+.accordion-content {
+  max-height: 0px;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease 0s, max-height 0.6s, padding 0.1s;
+  background-color: #fff;
+  border: 1px solid rgb(224, 211, 211);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+}
+.accordion-content__active {
+  overflow: visible;
+  opacity: 1;
+}
+.accordion-inner {
+  display: block;
+  padding: 20px;
+}
+
 .text-center {
   text-align: center;
 }
